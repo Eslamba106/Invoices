@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('product_name' , 999);
             $table->longText('description')->nullable();
             $table->foreignId('section_id')->constrained('sections')->cascadeOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
