@@ -44,7 +44,7 @@ Route::get('invoice_paid', [InvoiceController::class , 'invoice_paid']);
 Route::get('invoice_unpaid', [InvoiceController::class , 'invoice_unpaid']);
 Route::get('invoice_partial', [InvoiceController::class , 'invoice_partial'])->name('invoice.partial');
 Route::get('/print/{id}' , [ InvoiceController::class , 'print']);
-
+Route::get('export_invoices/', [InvoiceController::class, 'export']);
 
 
 

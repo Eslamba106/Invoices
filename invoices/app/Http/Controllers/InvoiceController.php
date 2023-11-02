@@ -7,10 +7,12 @@ use App\Models\Invoice;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use App\Models\Invoice_detail;
+use App\Exports\InvoicesExport;
 use App\Models\invoice_attachment;
 use App\Notifications\InvoicePaid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
@@ -90,31 +92,18 @@ class InvoiceController extends Controller
             $request->pic->move(public_path('Attachments/' . $invoice_number), $imageName);
         }
 
-
+        // notifications code
         $user = auth()->user();
-        // dd($user);
-        // Notification::send($user, new AddInvoice($invoice_id));
-
-        // $user = User::get();
-        // $invoices = Invoice::latest()->first();
-        // $user->notify(new InvoicePaid($invoice_id));
         Notification::send($user, new InvoicePaid($invoice_id));
-
-     
-
-
-
-
         
         // event(new MyEventClass('hello world'));
 
+
+        // sesstion and redirect code
         Session::flash('Add', 'تم اضافة الفاتورة بنجاح');
         return redirect()->route('invoices.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $invoices = Invoice::where('id' , $id)->first();
@@ -128,9 +117,6 @@ class InvoiceController extends Controller
         return view('invoices.edit' , compact(['invoice' , 'sections']));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request)
     {
         $invoice = Invoice::where('id' , $request->invoice_id);
@@ -152,9 +138,6 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request)
     {
        $id = $request->invoice_id ;
@@ -246,6 +229,9 @@ class InvoiceController extends Controller
     public function print($id){
         $invoices = Invoice::where('id' , $id)->first();
         return view('invoices.print' , compact('invoices'));
+    }
+    public function export() {
+        return Excel::download(new InvoicesExport, 'invoices.xlsx');
     }
 }
 // pulck fetch columns from table
