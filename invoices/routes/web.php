@@ -3,6 +3,8 @@
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
@@ -46,7 +48,10 @@ Route::get('invoice_partial', [InvoiceController::class , 'invoice_partial'])->n
 Route::get('/print/{id}' , [ InvoiceController::class , 'print']);
 Route::get('export_invoices/', [InvoiceController::class, 'export']);
 
-
+Route::middleware(['auth'])->group(function(){
+    Route::resource('/users', UserController::class);
+    Route::resource('roles', RoleController::class);
+});
 
 
 
