@@ -87,9 +87,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $j = 0 ?>
                             @foreach ($roles as $role)
+                            <?php ++$j ?>
                                 <tr>
-                                    <td>{{ ++$i }}</td>
+                                    <td><?php echo $j ?></td>
+                                    {{-- <td>{{ ++$i }}</td> --}}
                                     <td>{{ $role->name }}</td>
                                     <td>
                                         @can('عرض صلاحية')

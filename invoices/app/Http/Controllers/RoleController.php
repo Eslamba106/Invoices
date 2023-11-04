@@ -15,15 +15,15 @@ class RoleController extends Controller
 */
 
 
-// function __construct()
-// {
+function __construct()
+{
 
-// $this->middleware('permission:عرض صلاحية', ['only' => ['index']]);
-// $this->middleware('permission:اضافة صلاحية', ['only' => ['create','store']]);
-// $this->middleware('permission:تعديل صلاحية', ['only' => ['edit','update']]);
-// $this->middleware('permission:حذف صلاحية', ['only' => ['destroy']]);
+    $this->middleware('permission:عرض صلاحية', ['only' => ['index']]);
+    $this->middleware('permission:اضافة صلاحية', ['only' => ['create','store']]);
+    $this->middleware('permission:تعديل صلاحية', ['only' => ['edit','update']]);
+    $this->middleware('permission:حذف صلاحية', ['only' => ['destroy']]);
 
-// }
+}
 
 
 
@@ -35,9 +35,10 @@ class RoleController extends Controller
 */
 public function index(Request $request)
 {
+    // dd($request);
 $roles = Role::orderBy('id','DESC')->paginate(5);
-return view('roles.index',compact('roles'))
-->with('i', ($request->input('page', 1) - 1) * 5);
+return view('roles.index',compact('roles'));
+// ->with('i', ($request->input('page', 1) - 1) * 5);
 }
 /**
 * Show the form for creating a new resource.
@@ -46,25 +47,20 @@ return view('roles.index',compact('roles'))
 */
 public function create()
 {
-$permission = Permission::get();
-return view('roles.create',compact('permission'));
+    $permission = Permission::get();
+    return view('roles.create',compact('permission'));
 }
-/**
-* Store a newly created resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @return \Illuminate\Http\Response
-*/
+
 public function store(Request $request)
 {
-$this->validate($request, [
-'name' => 'required|unique:roles,name',
-'permission' => 'required',
-]);
-$role = Role::create(['name' => $request->input('name')]);
-$role->syncPermissions($request->input('permission'));
-return redirect()->route('roles.index')
-->with('success','Role created successfully');
+    $this->validate($request, [
+    'name' => 'required|unique:roles,name',
+    'permission' => 'required',
+    ]);
+    $role = Role::create(['name' => $request->input('name')]);
+    $role->syncPermissions($request->input('permission'));
+    return redirect()->route('roles.index')
+    ->with('success','Role created successfully');
 }
 /**
 * Display the specified resource.

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\InvoiceDetailController;
 use App\Http\Controllers\InvoiceArchiveController;
+use App\Http\Controllers\InvoicesReportController;
 use App\Http\Controllers\InvoiceAttachmentController;
 
 /*
@@ -36,22 +37,30 @@ Route::resources([
     'Invoices_attachments' => InvoiceAttachmentController::class ,
     'archive'              => InvoiceArchiveController::class ,
 ]);
+Route::middleware(['auth'])->group(function(){
+    Route::resource('/users', UserController::class);
+    Route::resource('roles', RoleController::class);
+});
+
+//=============================================================
 Route::get('section/{id}' , [InvoiceController::class , 'get_products']);
 Route::get('InvoicesDetails/{id}' , [InvoiceDetailController::class , 'edit']);
 Route::get('download/{invoice_number}/{file_name}' , [InvoiceDetailController::class , 'download_image']);
 Route::get('delete_file' , [InvoiceDetailController::class , 'destroy'])->name('delete_file');
 Route::get('invoices/show/{id}' , [InvoiceController::class , 'show'])->name('invoices.show');
-Route::post('status_update/{id}' , [InvoiceController::class , 'status_update'])->name('status.update');
 Route::get('invoice_paid', [InvoiceController::class , 'invoice_paid']);
 Route::get('invoice_unpaid', [InvoiceController::class , 'invoice_unpaid']);
 Route::get('invoice_partial', [InvoiceController::class , 'invoice_partial'])->name('invoice.partial');
 Route::get('/print/{id}' , [ InvoiceController::class , 'print']);
 Route::get('export_invoices/', [InvoiceController::class, 'export']);
+Route::get('invoices_report' , [InvoicesReportController::class , 'index']);
 
-Route::middleware(['auth'])->group(function(){
-    Route::resource('/users', UserController::class);
-    Route::resource('roles', RoleController::class);
-});
+//==============================================================================
+Route::post('status_update/{id}' , [InvoiceController::class , 'status_update'])->name('status.update');
+Route::post('Search_invoices' , [ InvoicesReportController::class , 'Search_invoices']);
+Route::get('Search_customers_index' , [ InvoicesReportController::class , 'Search_customers_index'])->name('Search_customers_index');
+Route::post('Search_customers' , [ InvoicesReportController::class , 'Search_customers'])->name('Search_customers');
+
 
 
 
